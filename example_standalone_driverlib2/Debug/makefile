@@ -122,36 +122,36 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-example_standalone_driverlib2.out \
+myUART.out \
 
 EXE_OUTPUTS__QUOTED += \
-"example_standalone_driverlib2.out" \
+"myUART.out" \
 
 BIN_OUTPUTS += \
-example_standalone_driverlib2.hex \
+myUART.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"example_standalone_driverlib2.hex" \
+"myUART.hex" \
 
 
 # All Target
-all: example_standalone_driverlib2.out
+all: myUART.out
 
 dependents:
-	-cd C:/Users/Dominic/git/driverlib_public/driverlib/ccs/Debug && $(MAKE) all
+	-cd C:/Users/Dominic/git/driverlib_public/driverlib/ccs/Debug && $(MAKE) clean all
 
 # Tool invocations
-example_standalone_driverlib2.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/Users/Dominic/git/driverlib_public/driverlib/ccs/Debug/driverlib.lib
+myUART.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS) C:/Users/Dominic/git/driverlib_public/driverlib/ccs/Debug/driverlib.lib
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C1294NCPDT --gcc --abi=eabi -z -m"app_TM4C1294NCPDT_ccs.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/lib" --reread_libs --warn_sections --rom_model -o "example_standalone_driverlib2.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C1294NCPDT --gcc --abi=eabi -z -m"app_TM4C1294NCPDT_ccs.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/lib" --reread_libs --warn_sections --rom_model -o "myUART.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
-example_standalone_driverlib2.hex: $(EXE_OUTPUTS)
+myUART.hex: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armhex"  -o "example_standalone_driverlib2.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccsv8/tools/compiler/ti-cgt-arm_18.1.2.LTS/bin/armhex"  -o "myUART.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 
