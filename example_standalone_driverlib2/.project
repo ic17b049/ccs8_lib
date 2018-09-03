@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>example_standalone_driverlib2</name>
+	<name>myUART</name>
 	<comment></comment>
 	<projects>
 		<project>driverlib</project>
