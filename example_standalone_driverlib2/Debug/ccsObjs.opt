@@ -1,1 +1,0 @@
-"./main.obj" "./tm4c1294ncpdt_startup_ccs.obj" "../tm4c1294ncpdt.cmd" -llibc.a -l"C:/Users/Dominic/git/driverlib_public/driverlib/ccs/Debug/driverlib.lib" 
