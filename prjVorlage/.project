@@ -3,6 +3,7 @@
 	<name>prjVorlage</name>
 	<comment></comment>
 	<projects>
+		<project>driverlib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
