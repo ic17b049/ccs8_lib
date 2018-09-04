@@ -15,7 +15,46 @@
 //*****************************************************************************
 uint32_t g_ui32SysClock;
 
-int main(void) {
+void interruptHandlerRisingEdge();
+void interruptHandlerFallingEdge();
+
+
+
+void interruptHandlerRisingEdge() {
+    GPIOIntClear(GPIO_PORTD_BASE, GPIO_INT_PIN_2);
+    GPIOIntUnregister(GPIO_PORTD_BASE);
+    GPIOIntDisable(GPIO_PORTD_BASE, GPIO_PIN_2);
+
+    GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1,0x00);
+    //GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_7,0x00);
+
+
+    GPIOIntRegister(GPIO_PORTD_BASE, interruptHandlerFallingEdge);
+    GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_2, GPIO_FALLING_EDGE);
+    GPIOIntEnable(GPIO_PORTD_BASE, GPIO_PIN_2);
+
+}
+
+
+void interruptHandlerFallingEdge() {
+    GPIOIntClear(GPIO_PORTD_BASE, GPIO_INT_PIN_2);
+    GPIOIntUnregister(GPIO_PORTD_BASE);
+    GPIOIntDisable(GPIO_PORTD_BASE, GPIO_PIN_2);
+
+    GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1,0xFF);
+    //GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_7,0xFF);
+
+
+    GPIOIntRegister(GPIO_PORTD_BASE, interruptHandlerRisingEdge);
+    GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_2, GPIO_RISING_EDGE);
+    GPIOIntEnable(GPIO_PORTD_BASE, GPIO_PIN_2);
+
+}
+
+
+
+
+void main(void) {
 
     //
     // Run from the PLL at 120 MHz.
@@ -44,19 +83,11 @@ int main(void) {
        GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, GPIO_PIN_1);
        GPIOPinTypeGPIOOutput(GPIO_PORTM_BASE, GPIO_PIN_7);
 
-       GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1 ,0xFF);
        GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_7 ,0x00);
 
+       GPIOIntRegister(GPIO_PORTD_BASE, interruptHandlerRisingEdge);
+       GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_2, GPIO_FALLING_EDGE);
+       GPIOIntEnable(GPIO_PORTD_BASE, GPIO_PIN_2);
 
-
-       while(true){
-           if(GPIOPinRead(GPIO_PORTD_BASE, GPIO_PIN_2)){
-               GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1,0x00);
-               GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_7,0x00);
-           }else{
-               GPIOPinWrite(GPIO_PORTN_BASE, GPIO_PIN_1,0xFF);
-               GPIOPinWrite(GPIO_PORTM_BASE, GPIO_PIN_7,0xFF);
-           }
-       }
-       return 0;
+       while(true);
 }
