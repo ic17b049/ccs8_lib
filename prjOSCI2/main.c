@@ -8,8 +8,8 @@
 #include <driverlib/gpio.h>
 #include <driverlib/timer.h>
 #include <driverlib/interrupt.h>
-#include <lib_ic17b049/uart.h>
 #include <lib_ic17b049/stopwatch.h>
+#include <lib_ic17b049/uart.h>
 #include <lib_ic17b049/uartTerminalCMD.h>
 
 
