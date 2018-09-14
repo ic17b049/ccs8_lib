@@ -19,7 +19,6 @@ extern void initUART(void);
 extern void sendCharToUart(char ch);
 extern void sendStringToUart(char *string);
 extern void sendNewLineToUart();
-extern void sendUint64ToUart(uint64_t value,int base);
 extern void closeUART();
 
 

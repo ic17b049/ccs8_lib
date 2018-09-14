@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
 #include <inc/hw_memmap.h> /* Supplies GPIO_PORTx_BASE */
 #include <inc/hw_timer.h> /* Supplies HW Timer */
 #include "inc/hw_ints.h"
@@ -11,7 +13,6 @@
 #include <lib_ic17b049/stopwatch.h>
 #include <lib_ic17b049/uart.h>
 #include <lib_ic17b049/uartTerminalCMD.h>
-
 
 
 
@@ -33,8 +34,8 @@ uint8_t irDataInv = 0;
 uint8_t irAddress = 0;
 uint8_t irAddressInv = 0;
 
-
-
+uint_fast8_t busy = 0;
+char sprintstr[50] = "\0";
 
 void interruptHandlerIrInit(void);
 void interruptHandlerIr(void);
@@ -87,6 +88,13 @@ void main(void) {
 
 void interruptHandlerIrInit(){
     GPIOIntClear(GPIO_PORTD_BASE, GPIO_PIN_2);
+
+    if(busy){
+        sendStringToUart("busy");
+    }else{
+        busy = 1;
+    }
+
     irSigNr = 0;
     irExpNext = Lead;
     resetStopwatch();
@@ -94,16 +102,26 @@ void interruptHandlerIrInit(){
 
     GPIOIntRegister(GPIO_PORTD_BASE, interruptHandlerIr);
     GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_2, GPIO_RISING_EDGE);
+
+
+    busy = 0;
 }
 
 
 void interruptHandlerIr(){
     GPIOIntClear(GPIO_PORTD_BASE, GPIO_PIN_2);
+
+    if(busy){
+        sendStringToUart("busy");
+    }else{
+        busy = 1;
+    }
+
+
     uint32_t time = getStopwatch();
     resetStopwatch();
     bool irFailure = true;
     irSigNr++;
-
 
     if((irExpNext & Lead) && irFailure == true){
         if(time > 9000-1000 && time < 9000+1000 && ( irSigNr == 1||irSigNr == 69||irSigNr == 5 )){
@@ -188,8 +206,9 @@ void interruptHandlerIr(){
                     sendStringToUart("PFZFehler");
                 }
 
-                sendUint64ToUart(irAddressInv, 16);
-                sendUint64ToUart(irDataInv, 16);
+                sprintf(sprintstr, "Received: 0x%02X%02X",irAddressInv,irDataInv);
+                sendStringToUart(sprintstr);
+                sendNewLineToUart();
 
                 irExpNext = Lead;
             }
@@ -197,11 +216,9 @@ void interruptHandlerIr(){
 
 
     if(irFailure == true){
+        sprintf(sprintstr, "Bad signal: %10i%10i",time,irSigNr);
+        sendStringToUart(sprintstr);
         sendNewLineToUart();
-        sendUint64ToUart(time, 10);
-        sendStringToUart(" ");
-        sendUint64ToUart(irSigNr, 10);
-
     }
 
 
@@ -211,12 +228,14 @@ void interruptHandlerIr(){
         GPIOIntTypeSet(GPIO_PORTD_BASE, GPIO_PIN_2, GPIO_FALLING_EDGE);
     }
 
+
+    busy = 0;
 }
 
 
 void restart(){
-    sendNewLineToUart();
-    sendStringToUart("EOL");
+
+    sendStringToUart("Waiting for new signal");
     sendNewLineToUart();
 
 
